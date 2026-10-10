@@ -1,6 +1,3 @@
---// QQ HUD
---// Put this LocalScript inside StarterPlayer > StarterPlayerScripts
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -1199,3 +1196,127 @@ RunService.RenderStepped:Connect(function(Delta)
 		Data.Text.Text = string.upper(Item.Name) .. "\n" .. Distance .. " studs"
 	end
 end)
+
+--// SUPER OPSEC MODE
+--// LocalScript - StarterPlayer > StarterPlayerScripts
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+--------------------------------------------------
+-- CONFIG
+--------------------------------------------------
+
+local IMAGE_ID = "rbxassetid://93061945307159"
+local SOUND_ID = "rbxassetid://140729021718836"
+
+local FADE_TIME = 5 -- seconds
+local IMAGE_TRANSPARENCY = 0.15
+
+--------------------------------------------------
+-- GUI
+--------------------------------------------------
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SuperOpsecMode"
+ScreenGui.IgnoreGuiInset = true -- covers the top bar too
+ScreenGui.ResetOnSpawn = false
+ScreenGui.DisplayOrder = 999999
+ScreenGui.Parent = PlayerGui
+
+--------------------------------------------------
+-- FULL SCREEN IMAGE
+--------------------------------------------------
+
+local Image = Instance.new("ImageLabel")
+Image.Name = "HackerImage"
+Image.AnchorPoint = Vector2.new(0.5, 0.5)
+Image.Position = UDim2.fromScale(0.5, 0.5)
+Image.Size = UDim2.fromScale(1, 1)
+Image.BackgroundTransparency = 1
+Image.BorderSizePixel = 0
+Image.Image = IMAGE_ID
+Image.ImageTransparency = IMAGE_TRANSPARENCY
+
+-- Stretches the image to exactly fill the screen
+Image.ScaleType = Enum.ScaleType.Stretch
+
+Image.Parent = ScreenGui
+
+--------------------------------------------------
+-- CENTER TEXT
+--------------------------------------------------
+
+local Text = Instance.new("TextLabel")
+Text.Name = "HackerText"
+Text.AnchorPoint = Vector2.new(0.5, 0.5)
+Text.Position = UDim2.fromScale(0.5, 0.5)
+Text.Size = UDim2.fromScale(0.9, 0.15)
+
+Text.BackgroundTransparency = 1
+Text.Text = "SUPER OPSEC MODE ACTIVE!!! SCRIPT LOADED!!"
+
+Text.TextColor3 = Color3.fromRGB(0, 255, 0)
+Text.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+Text.TextStrokeTransparency = 0
+
+Text.Font = Enum.Font.Code
+Text.TextScaled = true
+Text.TextWrapped = true
+
+Text.Parent = ScreenGui
+
+--------------------------------------------------
+-- SOUND
+--------------------------------------------------
+
+local Sound = Instance.new("Sound")
+Sound.Name = "OpsecSound"
+Sound.SoundId = SOUND_ID
+Sound.Volume = 4
+Sound.Parent = ScreenGui
+
+Sound:Play()
+
+--------------------------------------------------
+-- FADE OUT
+--------------------------------------------------
+
+task.wait(1)
+
+local FadeInfo = TweenInfo.new(
+	FADE_TIME,
+	Enum.EasingStyle.Linear,
+	Enum.EasingDirection.Out
+)
+
+local ImageFade = TweenService:Create(
+	Image,
+	FadeInfo,
+	{
+		ImageTransparency = 1
+	}
+)
+
+local TextFade = TweenService:Create(
+	Text,
+	FadeInfo,
+	{
+		TextTransparency = 1,
+		TextStrokeTransparency = 1
+	}
+)
+
+ImageFade:Play()
+TextFade:Play()
+
+--------------------------------------------------
+-- CLEAN UP
+--------------------------------------------------
+
+task.wait(FADE_TIME)
+
+ScreenGui:Destroy()
